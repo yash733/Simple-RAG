@@ -7,9 +7,11 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, trim_messages
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
+
 
 # Load API Keys
 load_dotenv()
@@ -29,32 +31,46 @@ st.title("📄 RAG - Why You Should Hire Me!")
 # Upload PDF
 uploaded_file = st.sidebar.file_uploader("Upload Your Resume (PDF)", type=["pdf"])
 
+#Store History in "chat_history" a list[]
+if "chat_history" not in st.session_state:
+   st.session_state.chat_history = []
+
+# Load context from context.txt
+context_text = ""
+with open("D:/krish/agent/RAG/contex.txt", "r") as file:
+    context_text = file.read()
+
+
 if uploaded_file:
     # Load PDF and Process
     with open("temp_resume.pdf", "wb") as f:
         f.write(uploaded_file.getvalue())
 
-    #from langchain_community.document_loaders import PyPDFLoader
     loader = PyPDFLoader("temp_resume.pdf")
     docs = loader.load()
+    #print("docs ",docs)
 
-    #from langchain_text_splitters import RecursiveCharacterTextSplitter
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=120)
     docs = text_splitter.split_documents(docs)
 
-    #from langchain_huggingface import HuggingFaceEmbeddings
+    # Split context text into chunks and create Document objects
+    context_docs = text_splitter.split_text(context_text)
+
     embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     #texts = [doc.page_content for doc in docs] 
-
-    #from langchain_community.vectorstores import FAISS 
+     
     vectorstore = FAISS.from_documents(docs, embedding_function)
+    vectorstore = FAISS.from_documents(context_docs, embedding_function)
     #__ vectorstore = FAISS.from_texts(texts, embedding_function)      !! if loading text !!
     retriever = vectorstore.as_retriever()
 
     #from langchian_core.prompts import ChatPromptTemplate
-    prompt = ChatPromptTemplate.from_messages(
+    prompt = ChatPromptTemplate(
         [
-            ("system","Act like my assistant, use the provided context and answer the question's asked by recruter. Specify my capable in number. Also any other details that can help me in getting shortlisted in the role of Machine Learning Engineer, Artificial Intelligance Engineer, Data Analytics, Data Scientist or any other role or job discription related to my skill set. \n{context}"),
+            ("system","Act as my assistant and representative during recruitment discussions. Your role is to answer questions posed by recruiters using my resume as context. Ensure that responses highlight my compatibility with their requirements, particularly for roles related to Machine Learning, Data Science, Data Analytics, Computer Vision, NLP, AI Engineering, or any other relevant fields."
+            "Back up every claim with specific examples from my experience, showcasing my skills, achievements, certifications and projects to make me a strong candidate. Dont over advertize"
+            "If asked about AI-related projects exaplin a bit of my expriaence gained or my current work, provide them with my X and LinkedIn profile links, featched from context and additonal data {data}. \n{context}"),
+            MessagesPlaceholder(variable_name = "chat_history_"),
             ("user","{input}")
         ]
     )
@@ -63,12 +79,39 @@ if uploaded_file:
     document_chain = create_stuff_documents_chain(model,prompt)
     retriever_chain = create_retrieval_chain(retriever, document_chain)
 
+    #Trim Chat_History
+    trimmer = trim_messages(
+        max_tokens = 200,
+        strategy = 'last',
+        token_counter = model,
+        include_system = True,
+        allow_partial = False,
+        start_on = 'human'
+    )
+        
     with st.sidebar:
         pdf_viewer(input=uploaded_file.getvalue(), width=700)
 
     input_text = st.text_input("Ask a question (e.g., Your experience in AI)")
+    
+       
     if input_text:
-        result = retriever_chain.invoke({"input":input_text, "context":"context"})
+        #store user input
+        #st.session_state.chat_history.add_user_message(input_text) 
+        st.session_state.chat_history.append(HumanMessage(content=input_text))
+
+        trimmed_message = trimmer.invoke(st.session_state.chat_history)
+
+        result = retriever_chain.invoke({
+            "input":input_text,
+            "data":context_docs, 
+            "context":docs, 
+            "chat_history_":trimmed_message})
+        
+        #store ai message
+        #st.session_state.chat_history.add_ai_message(result['answer'])
+        st.session_state.chat_history.append(AIMessage(content=result['answer']))
+        
         st.write(result['answer'])        
         #result = vectorstore.similarity_search(input_text)
     
@@ -77,3 +120,15 @@ if uploaded_file:
                 st.write(f"🔹 **Document {i}**")
                 st.write(f"📄 **Content:**\n{doc}\n")
                 st.write("=" * 80)
+            
+            st.subheader('Chat History')
+            for msg in st.session_state.chat_history:
+                if isinstance(msg, HumanMessage):
+                    st.write(f"👤 **You:** {msg.content}")
+                elif isinstance(msg, AIMessage):
+                    st.write(f"🤖 **AI:** {msg.content}")
+            
+            st.write(st.session_state.chat_history)
+
+    if st.button('Clear ChatHistory'):
+        st.session_state.chat_history = []

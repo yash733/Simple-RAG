@@ -1,0 +1,40 @@
+Here’s **only the additional data** you’ve provided outside of your parsed resume, which can be used by an **LLM to generate a perfect message** based on context:  
+
+### **Personal & Communication Preferences:**  
+- **Prefers concise, to-the-point emails** as recruiters and professionals have limited time.  
+- **Avoids excessive LinkedIn posting**, believes in learning for personal growth rather than public validation.  
+- **Values deep technical understanding** over surface-level knowledge, especially in AI/ML.  
+- **Focuses on core computing principles** before diving into applications.  
+- **Prefers authenticity in recommendations and applications**, ensuring they reflect actual skills and experiences.  
+
+### **Internship & Work Culture Observations:**  
+- Noticed that **many IT professionals focus on implementation without understanding underlying concepts**.  
+- In interviews, **many recruiters have only a contextual understanding of technologies rather than deep technical expertise**.  
+- Experience working with **HR policies and reimbursement processes** (e.g., research paper publication reimbursement issue).  
+
+### **Research & Academic Interests:**  
+- **Published a research paper in ICEICT 2023 (SCOPUS Indexed)** on **Electronic Device User Profile Switching using Facial Detection**.  
+- **Strong relationship with professors (Kulvinder Singh & Prabhneet Singh)**, often reaching out for **guidance beyond class hours**.  
+- Enjoys **exploring Agentic AI and Generative AI applications** over AWS & GCP.  
+- Keen on **understanding AI model optimization, data pipeline structuring, and cloud integration**.  
+
+### **General Work & Learning Approach:**  
+- **Self-driven learning**—actively working on MLflow, DAGsHub, DVC, and AWS S3 for **data pipeline automation**.  
+- **Interested in applying AI/ML to real-world industrial use cases** (e.g., AI-driven agriculture at LTID, AI for retail optimization).  
+- Seeks **mentorship from professionals working in Data Science, AI, and ML fields** to improve industry readiness.  
+- Open to both **full-time and part-time roles** and **willing to work remotely or from office premises**.  
+
+### **Specific Job & HR Interactions:**  
+- Followed up **multiple times with CricHeroes** regarding a **Machine Learning Engineer position**, seeking updates.  
+- **Contacted multiple professionals at Exxat** for an **SDE role after completing a Product Analyst internship**.  
+- Applied for **HRD attestation at Chandigarh University**, requesting clarification on transcript copies.  
+- Communicated with **Yasuo Taniguchi (CEO of LTID) regarding interview expectations & difficulty level**.  
+
+### **Specific Email & Document Requests:**  
+- Requested a **properly scanned, high-resolution LOR** (Letter of Recommendation) with aligned corners.  
+- **Clarified online application requests for university document verification**.  
+- Requested **LORs from both Prabhneet Singh & Kulvinder Singh** for **Masters applications in Data Science, AI, and ML**.  
+
+---
+
+This **non-resume data** provides a **stronger context** for **LLMs** to generate highly personalized job applications, emails, and cover letters tailored to your profile. 🚀 Let me know if you need further refinements!
