@@ -54,13 +54,39 @@ This project is a **Retrieval-Augmented Generation (RAG) system** built using **
 - **PyPDFLoader**: Extracting text from PDFs
 - **Python Dotenv**: Managing API keys securely
 
-## Future Improvements
-- ✅ Support for **multiple document uploads**
-- ✅ Better prompt engineering for improved responses
-- ✅ Integration with **more LLMs** for comparison
-- ✅ Option to **save and export** responses
-
 ## 📌 Data Flow
+```
+graph TD;
+    A[Upload Resume (PDF)] -->|Extract Text| B[PyPDFLoader];
+    B -->|Chunk Text| C[RecursiveCharacterTextSplitter];
+    C -->|Embed Text| D[HuggingFaceEmbeddings];
+    D -->|Store Vectors| E[FAISS VectorStore];
+    E -->|Retrieve Context| F[LangChain Retriever];
+    F -->|Pass Context & Query| G[ChatGroq (Llama3-70B)];
+    G -->|Generate Response| H[Streamlit UI];
+```
+
+## 📌 Project Overview
+This project leverages **Retrieval-Augmented Generation (RAG)** to enhance the recruitment process by allowing users to upload their resumes and interact with an AI assistant. The assistant provides insights into the candidate's skills and suitability for job roles in **Machine Learning, AI, Data Analytics, and Data Science.**
+
+## 🚀 Features
+- **Resume Upload**: Upload your resume in **PDF format**.
+- **PDF Parsing**: Extracts text using `PyPDFLoader`.
+- **Text Chunking**: Splits text into manageable pieces using `RecursiveCharacterTextSplitter`.
+- **Embedding & Retrieval**: Stores and retrieves relevant resume sections using `FAISS` and `HuggingFaceEmbeddings`.
+- **AI-Powered Q&A**: Uses `Llama3-70B` (via `ChatGroq`) to answer recruiters' queries.
+- **Expandable Insights**: Provides additional context about retrieved documents.
+
+```
+graph TD;
+    A[Upload Resume (PDF)] -->|Extract Text| B[PyPDFLoader];
+    B -->|Chunk Text| C[RecursiveCharacterTextSplitter];
+    C -->|Embed Text| D[HuggingFaceEmbeddings];
+    D -->|Store Vectors| E[FAISS VectorStore];
+    E -->|Retrieve Context| F[LangChain Retriever];
+    F -->|Pass Context & Query| G[ChatGroq (Llama3-70B)];
+    G -->|Generate Response| H[Streamlit UI];
+```
 
 ### **1. User Upload (Dynamic Mode)**
 - User uploads a **PDF file** via the **Streamlit sidebar**.
